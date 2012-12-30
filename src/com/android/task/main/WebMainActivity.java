@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,11 +45,15 @@ import android.widget.Toast;
  *     2. WebChromeClient 同时支持android23和android40
  *     3. 版本号获取错误，利用replaceall函数错误
  *     4. 打开StrictMode策略
-
+ *     
+ * 0.14 
+ * 	  Feature:
+ * 	  1. 支持android4.1 
+ * 	  2. 只保留压缩后的图片，删除原图。 
  */
 public class WebMainActivity extends Activity {
 	
-	public  static final String         VERSION		  = "0.13";
+	public  static final String         VERSION		  = "0.14";
 	public  ProgressDialog ProgressDialog = null;
 
 	private final boolean	   APP_DEBUG    = false;
@@ -78,6 +83,10 @@ public class WebMainActivity extends Activity {
         ProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         ProgressDialog.setTitle("数据传输中...");
         mEquipmentId = new EquipmentId(this);
+        
+        
+        requestWindowFeature(Window.FEATURE_NO_TITLE);   //设置标题栏样式
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);  //全屏
 
         setContentView(R.layout.web_main);
         
@@ -86,7 +95,6 @@ public class WebMainActivity extends Activity {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setUserAgentString(mEquipmentId.getId());
         mWebView.getSettings().setSavePassword(false);
-        
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mWebView.setWebChromeClient(new MyWebChromeClient(this));
         mWebView.setWebViewClient(new MyWebClient(this));
@@ -141,12 +149,16 @@ public class WebMainActivity extends Activity {
     	if(requestCode== MyWebChromeClient.FILECHOOSER_IMAG_RESULTCODE)  
     	{  
 
+
     		Uri result = intent == null || resultCode != RESULT_OK ? null  : intent.getData();  
     		ScaleBitmap scale_bitmap = new ScaleBitmap(this,result);
     		Bitmap      bit_map      = scale_bitmap.scale();
     		InsertFileToMediaStore insert_file = new InsertFileToMediaStore(this,bit_map,"image/jpeg");
 			Uri uri = insert_file.insert();
     		UploadMessage.set_upload_message(uri);
+    		if (result !=null){
+			 	this.getContentResolver().delete(result, null, null);
+    		}
     		bit_map = null;
     		scale_bitmap.release();
     	}else if (requestCode == MyWebChromeClient.FILECHOOSER_VIDEO_RESULTCODE){
@@ -154,9 +166,13 @@ public class WebMainActivity extends Activity {
     		UploadMessage.set_upload_message(result);
     	}else if (requestCode == MyWebChromeClient.CAPTURE_PICTURE_INTENT){
     		 if (resultCode != RESULT_OK  ){
+    		     if (UploadMessage.get_file_uri() != null){
+ 				 	this.getContentResolver().delete(UploadMessage.get_file_uri(), null, null);
+    		     }
     			 UploadMessage.set_upload_message(null);
     		 }else{
     			 if (UploadMessage.get_file_uri() != null){
+    				   Uri deleteFile = UploadMessage.get_file_uri();
     				 	try {
     				 		ScaleBitmap scale_bitmap = new ScaleBitmap(this,UploadMessage.get_file_uri());
 
@@ -176,8 +192,9 @@ public class WebMainActivity extends Activity {
     				 	}catch (Exception e)
     				 	{
     				        Toast.makeText(WebMainActivity.this, "插入文件出错！", Toast.LENGTH_LONG).show();
-    		    			 UploadMessage.set_upload_message(null);
+    		    			UploadMessage.set_upload_message(null);
     				 	}
+    				 	this.getContentResolver().delete(deleteFile, null, null);
     			 }else{
     				 UploadMessage.set_upload_message();
     			 }

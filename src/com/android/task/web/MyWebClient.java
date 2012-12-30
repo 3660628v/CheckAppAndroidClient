@@ -35,7 +35,7 @@ public class MyWebClient extends WebViewClient{
         view.loadUrl(url);
         return true;
     }
-	
+	/*
 	@Override
 	public void onPageStarted(WebView view, String url, Bitmap favicon) 
 	{
@@ -47,7 +47,7 @@ public class MyWebClient extends WebViewClient{
 	public void onPageFinished(WebView view, String url) {
 	Toast.makeText(this.a, "服务正常返回", 1).show();
 		super.onPageFinished(view, url);
-	}
+	}*/
 	@Override
     public void onReceivedError(WebView view, int errorCode,String description, String failingUrl) {
         Toast.makeText(this.a, "网络错误", Toast.LENGTH_SHORT).show();

@@ -101,22 +101,9 @@ public class MyWebChromeClient extends WebChromeClient{
 
 					}else if (i == 1){
 						Log.i(TAG,"摄像");
-						/*
-						Intent intent = new Intent(MyWebChromeClient.this.mActivity, VideoRecorder.class);
-						UploadMessage.set_upload_uri(mUploadMessage);
-						MyWebChromeClient.this.mActivity.startActivity(intent);
-						*/
-						
-						/*
-						String fileName ="temp.3gp";
-						ContentValues values = new ContentValues();  
-						values.put(MediaStore.Video.Media.TITLE, fileName); 
-						Uri cameraVideoURI = MyWebChromeClient.this.mActivity.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);  
-						*/
 
 				        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE); 
-//				        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraVideoURI);  
-						intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+				        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);//设置为中质量，0 质量太差了
 //						intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10);   
 						intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
 						MyWebChromeClient.this.mActivity.startActivityForResult(intent, CAPTURE_VIDEO_INTENT);
@@ -172,6 +159,12 @@ public class MyWebChromeClient extends WebChromeClient{
 	}
 	
 	public void openFileChooser(ValueCallback<Uri> uploadMsg,String acceptType)
+	{
+		mUploadMessage = uploadMsg;
+		UploadMessage.set_upload_uri(mUploadMessage);
+		mBuilder.create().show();
+	}
+	public void openFileChooser(ValueCallback<Uri> uploadMsg,String acceptType,String capture)
 	{
 		mUploadMessage = uploadMsg;
 		UploadMessage.set_upload_uri(mUploadMessage);
