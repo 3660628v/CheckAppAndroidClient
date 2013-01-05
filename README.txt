@@ -1,4 +1,4 @@
-https://github.com/chouqiu/CheckAppAndroidClient.git
+锘縣ttps://github.com/chouqiu/CheckAppAndroidClient.git
 
-在httpclient和webview间同步cookie
+鍦╤ttpclient鍜寃ebview闂村悓姝ookie
 http://stackoverflow.com/questions/5396965/setting-cookies-in-webview-android
