@@ -13,6 +13,7 @@ import com.android.task.tools.EquipmentId;
 import com.android.task.web.MyWebChromeClient;
 import com.android.task.web.MyWebClient;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -24,7 +25,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +53,7 @@ import android.widget.Toast;
  * 	  1. 支持android4.1 
  * 	  2. 只保留压缩后的图片，删除原图。 
  */
+@SuppressLint("SetJavaScriptEnabled")
 public class WebMainActivity extends Activity {
 	
 	public  static final String         VERSION		  = "0.14";
@@ -65,6 +68,7 @@ public class WebMainActivity extends Activity {
 	private MainPage		   mMpage;
 	private SysSetting		   mSysSetting;
 	private EquipmentId		   mEquipmentId;
+	String _cookie, _token, _csrf, _urlapi, _useragent;
 	
 	
     @SuppressWarnings("static-access")
@@ -72,6 +76,16 @@ public class WebMainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler());
         super.onCreate(savedInstanceState);
+        
+        
+        Bundle sess_data = new Bundle();
+        sess_data = this.getIntent().getExtras();
+        _cookie = new String(sess_data.getString("sess"));
+        _token = new String(sess_data.getString("token"));
+        _csrf = new String(sess_data.getString("csrf"));
+        _urlapi = new String(sess_data.getString("url"));
+        _useragent = new String(sess_data.getString("useragent"));
+        
         this.getWindow().requestFeature(Window.FEATURE_PROGRESS);
         
         this.getWindow().setFeatureInt( Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
@@ -91,9 +105,19 @@ public class WebMainActivity extends Activity {
         setContentView(R.layout.web_main);
         
         mWebView = (WebView) findViewById(R.id.main_webview);
+
+        CookieSyncManager.createInstance(mWebView.getContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.removeSessionCookie();
+        cookieManager.setCookie(".365check.net","remember_token="+_cookie+" ; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT");
+        cookieManager.setCookie(".365check.net","_check_app_session="+_cookie+" ; path=/");
+        CookieSyncManager.getInstance().sync();
+        
         mWebView.setFocusable(true);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.getSettings().setUserAgentString(mEquipmentId.getId());
+        //mWebView.getSettings().setUserAgentString(mEquipmentId.getId());
+        mWebView.getSettings().setUserAgentString(_useragent);
         mWebView.getSettings().setSavePassword(false);
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mWebView.setWebChromeClient(new MyWebChromeClient(this));
@@ -107,7 +131,11 @@ public class WebMainActivity extends Activity {
         mUrlConf 		= new UrlConfigure(this,this.mWebView);
         mSysSetting		= new SysSetting(this,this.mWebView);
         
-        mWebView.loadUrl(mUrlConf.getUrl());
+        if ( _urlapi.isEmpty() ) {
+        	mWebView.loadUrl(mUrlConf.getUrl());
+        } else {
+        	mWebView.loadUrl(_urlapi);
+        }
         
         mExit	= new CheckAppClientExit(this);
         mMpage  = new MainPage(this);
