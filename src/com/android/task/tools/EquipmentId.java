@@ -46,14 +46,9 @@ public class EquipmentId
 	
 	public String getAndroidVersion()
 	{
-		String v = android.os.Build.VERSION.RELEASE.replaceAll("\\.", "");
-		Log.d(TAG, android.os.Build.VERSION.CODENAME+"\t" +
-				   android.os.Build.VERSION.INCREMENTAL+"\t" +
-				   android.os.Build.VERSION.RELEASE +"\t" +
-				   android.os.Build.VERSION.SDK );
-		Log.d(TAG,"Version:"+v.length());
+		String v = android.os.Build.VERSION.RELEASE.replaceAll(".", "");
 		if (v.length() >=2){
-			return VERSION_PREFIX+v.substring(0, 2);
+			return VERSION_PREFIX+v.substring(0, 1);
 		}else{
 			return VERSION_PREFIX+DefaultVersion;
 		}

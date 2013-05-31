@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -91,7 +90,7 @@ public class InsertFileToMediaStore {
 				os2.close();
 			}else{
 				Log.e(TAG,"插入文件到media 中发生错误");
-				//Toast.makeText(this.a, "插入数据时发生错误，请重试！", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this.a, "插入数据时发生错误，请重试！", Toast.LENGTH_SHORT).show();
 				return null;
 			}
 				

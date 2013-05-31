@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import android.os.Environment;
+import android.util.Log;
 
 public class Tools
 {
@@ -40,15 +41,17 @@ public class Tools
 		else if ( type == MEDIA_TYPE_IMAGE ){
 			
 			// save to default gallery dir
+			/*
 			mediaFile = new File(
 					Environment.getExternalStorageDirectory() + 
 					File.separator + 
 					"DCIM" + File.separator + 
 					"Camera" + File.separator + 
 					timeStamp + ".jpg");
+			*/
 			
 			// save to sd card
-			/*File mediaStorageDir = new File(
+			File mediaStorageDir = new File(
 					Environment.getExternalStoragePublicDirectory(
 							Environment.DIRECTORY_PICTURES), "clientpics");
 			if(!mediaStorageDir.exists()) {
@@ -64,7 +67,7 @@ public class Tools
 			mediaFile = new File(
 					mediaStorageDir.getPath() + 
 							File.separator + timeStamp + ".jpg");
-			*/
+			
 			
 		}
 		else {

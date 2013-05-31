@@ -12,22 +12,34 @@ public class IdShow
 	private Activity 			mA 				= null;
 	private EquipmentId mEquipmentId			= null;
 	private AlertDialog mIdDialog				= null;
+	private String mTitle;
+	private String mContent;
 
 	
 	public IdShow(Activity a)
 	{
 		this.mA				=	a;
-		this.mEquipmentId	=   new EquipmentId(this.mA);
+		//this.mEquipmentId	=   new EquipmentId(this.mA);
+		mTitle = ID_TITLE;
+		mContent = new EquipmentId(this.mA).getId();
 		this.init();
 	}
+	
+	public IdShow(String title, String content, Activity a) {
+		mA = a;
+		mTitle = title;
+		mContent = content;
+		this.init();
+	}
+	
 	public AlertDialog getIdDialog() {
 		return mIdDialog;
 	}
 	private void init()
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this.mA);
-		builder.setTitle(ID_TITLE);
-		builder.setMessage(this.mEquipmentId.getId());
+		builder.setTitle(mTitle);
+		builder.setMessage(mContent);
 		builder.setPositiveButton("È·¶¨", null);
 		this.mIdDialog = builder.create();
 	}

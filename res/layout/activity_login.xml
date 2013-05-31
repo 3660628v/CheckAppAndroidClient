@@ -1,6 +1,6 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".LoginActivity" >
+    tools:context=".main.LoginActivity" >
 
     <!-- Login progress -->
 
@@ -30,13 +30,15 @@
 
     <!-- Login form -->
 
-    <ScrollView
+   <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
         <LinearLayout
             style="@style/LoginFormContainer"
+            android:layout_width="match_parent"
+            android:layout_height="409dp"
             android:orientation="vertical" >
 
             <EditText
@@ -60,15 +62,36 @@
                 android:maxLines="1"
                 android:singleLine="true" />
 
+			<LinearLayout
+			    style="@style/LoginFormContainer"
+			    android:layout_height="match_parent"
+			    android:orientation="horizontal" >
+            	
+			<CheckBox
+                android:id="@+id/checkBox_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/save_password" />
             <Button
                 android:id="@+id/sign_in_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.1"
                 android:layout_gravity="right"
                 android:layout_marginTop="16dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
                 android:text="@string/action_sign_in_register" />
+
+			</LinearLayout>
+			
+			<TextView
+			    android:id="@+id/tv_fill"
+			    android:layout_width="match_parent"
+			    android:layout_height="256dp"
+			    android:textIsSelectable="false" />
+	
         </LinearLayout>
     </ScrollView>
 

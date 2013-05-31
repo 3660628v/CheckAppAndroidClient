@@ -1,6 +1,7 @@
 package com.android.task.main.function;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.net.URL;
 import com.android.task.tools.EquipmentId;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -35,15 +37,71 @@ public class SysUpdate
 	
 	public void update()
 	{
+		/*
 		if (this.downloadNewPackage()){
 			this.installPackage();
 			Toast.makeText(this.a, "安装新版本成功！", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		Toast.makeText(this.a, "安装新版本失败！", Toast.LENGTH_SHORT).show();
-
+		*/
+		downUpdate du = new downUpdate(a, this.getNewPackageUrl());
+		du.doUpdate();
 	}
 	
+	private class downUpdate extends GetInfoTask {
+		private Context context;
+		private String url;
+		
+		public downUpdate(Context con, String url) {
+			context = con;
+			this.url = url;
+		}
+		
+		public void doUpdate() {
+			this.execute(url, "android", "get");
+		}
+		
+		@Override
+		protected void onPostExecGet(Boolean succ) {
+			if (succ) {
+				if (this.getHttpCode() != 200) {
+					Toast.makeText(context, "下载升级文件失败, 请联系系统管理员: "+this.getHttpCode(), Toast.LENGTH_SHORT).show();
+					return;
+				}
+				// 保存文件
+				File SDCardRoot = Environment.getExternalStorageDirectory();
+		        File file = new File(SDCardRoot,LOCAL_PACKAGE_FILE);
+		        try {
+					FileOutputStream fileOutput = new FileOutputStream(file);
+					fileOutput.write(this.toByte());
+					fileOutput.close();
+					
+					installPackage();
+					Toast.makeText(context, "安装新版本成功", Toast.LENGTH_SHORT);
+				} catch (FileNotFoundException e) {
+					Toast.makeText(context, "文件保存错误，请确认路径正确："+SDCardRoot+"/"+LOCAL_PACKAGE_FILE, Toast.LENGTH_SHORT);
+					//e.printStackTrace();
+				} catch (IOException e) {
+					//e.printStackTrace();
+					Toast.makeText(context, "文件保存失败，请检查存储空间", Toast.LENGTH_SHORT);
+				}
+		        
+			} else {
+				Toast.makeText(context, "下载升级文件失败, 请联系系统管理员", Toast.LENGTH_SHORT).show();
+			}
+		}
+		
+		private void installPackage()
+		{
+			Toast.makeText(context, "安装路径："+Environment.getExternalStorageDirectory()+"//"+LOCAL_PACKAGE_FILE, Toast.LENGTH_SHORT).show();
+			File apkFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + LOCAL_PACKAGE_FILE);
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+			context.startActivity(intent);
+		}
+	}
+	
+	/*
 	private boolean downloadNewPackage() 
 	{
 		String packageUrl				 	= this.getNewPackageUrl();
@@ -51,10 +109,9 @@ public class SysUpdate
         URL url;
 		try {
 			url = new URL(packageUrl);
-			Log.d(TAG,"package url is " + url);
 			urlConnection = (HttpURLConnection) url.openConnection();
 	        urlConnection.setRequestMethod("GET");
-//	        urlConnection.setDoOutput(true);
+	        urlConnection.setDoOutput(true);
 	        urlConnection.connect();
 	        File SDCardRoot = Environment.getExternalStorageDirectory();
 	        File file = new File(SDCardRoot,LOCAL_PACKAGE_FILE);
@@ -83,21 +140,18 @@ public class SysUpdate
 			Toast.makeText(this.a, "更新地址有误！", Toast.LENGTH_LONG).show();
 			return false;
 		}  catch (IOException e) {
-			e.printStackTrace();
 			Log.e(TAG,"net work error!");
 			Toast.makeText(this.a, "连接服务器失败！", Toast.LENGTH_LONG).show();
+			return false;
+		} catch ( Exception e ) {
+			Toast.makeText(this.a, "download error: "+e.toString(), Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		Log.d(TAG,"DownLoad Success!");
 		return true;
 	}
-	private void installPackage()
-	{
-		File apkFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + LOCAL_PACKAGE_FILE);
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-		this.a.startActivity(intent);
-	}
+	*/
+	
 	private String getNewPackageUrl()
 	{
 		return "http://"+mUrlConfigure.getHost() 			+ "/" +

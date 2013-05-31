@@ -2,12 +2,7 @@ package com.android.task.web;
 
 
 import com.android.task.main.WebMainActivity;
-import com.android.task.picture.PhotoCapturer;
 import com.android.task.tools.UploadMessage;
-import com.android.task.video.VideoRecorder;
-
-import android.R;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
@@ -22,7 +17,6 @@ import android.view.KeyEvent;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 
 public class MyWebChromeClient extends WebChromeClient{
@@ -34,7 +28,8 @@ public class MyWebChromeClient extends WebChromeClient{
 	public  final static int       FILECHOOSER_VIDEO_RESULTCODE 	= 201;
 	public  final static int       CAPTURE_PICTURE_INTENT			= 301;
 	public  final static int       CAPTURE_VIDEO_INTENT				= 401;
-	final CharSequence[] func_items   = {"现场拍照", "现场摄像", "选取照片","取消"};
+	//final CharSequence[] func_items   = {"现场拍照", "现场摄像", "选取照片","取消"};
+	final CharSequence[] func_items   = {"现场拍照", "选取照片","取消"};
 	final String         DIALOG_TITLE = "选择功能";
 
 	private void init_dialog()
@@ -66,10 +61,11 @@ public class MyWebChromeClient extends WebChromeClient{
 							i  =0;
 							break;
 						case 1:
-							i = 1;
+							//i = 1;
+							i = 2;
 							break;
 						case 2:
-							i = 2;
+							//i = 2;
 							break;
 						default :
 							break;
@@ -101,9 +97,22 @@ public class MyWebChromeClient extends WebChromeClient{
 
 					}else if (i == 1){
 						Log.i(TAG,"摄像");
+						/*
+						Intent intent = new Intent(MyWebChromeClient.this.mActivity, VideoRecorder.class);
+						UploadMessage.set_upload_uri(mUploadMessage);
+						MyWebChromeClient.this.mActivity.startActivity(intent);
+						*/
+						
+						/*
+						String fileName ="temp.3gp";
+						ContentValues values = new ContentValues();  
+						values.put(MediaStore.Video.Media.TITLE, fileName); 
+						Uri cameraVideoURI = MyWebChromeClient.this.mActivity.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);  
+						*/
 
 				        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE); 
-				        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);//设置为中质量，0 质量太差了
+//				        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraVideoURI);  
+						intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 //						intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10);   
 						intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
 						MyWebChromeClient.this.mActivity.startActivityForResult(intent, CAPTURE_VIDEO_INTENT);
@@ -153,21 +162,22 @@ public class MyWebChromeClient extends WebChromeClient{
 	
 	public void openFileChooser(ValueCallback<Uri> uploadMsg)
 	{
+		Log.d("MyWebChrome", "choose file");
 		mUploadMessage = uploadMsg;
 		UploadMessage.set_upload_uri(mUploadMessage);
 		mBuilder.create().show();
 	}
 	
-	public void openFileChooser(ValueCallback<Uri> uploadMsg,String acceptType)
+	public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType)
 	{
+		Log.d("MyWebChrome", "choose file1");
 		mUploadMessage = uploadMsg;
 		UploadMessage.set_upload_uri(mUploadMessage);
 		mBuilder.create().show();
 	}
-	public void openFileChooser(ValueCallback<Uri> uploadMsg,String acceptType,String capture)
-	{
-		mUploadMessage = uploadMsg;
-		UploadMessage.set_upload_uri(mUploadMessage);
-		mBuilder.create().show();
+	
+	public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+		Log.d("MyWebChrome", "choose file2");
+		openFileChooser(uploadMsg, acceptType);
 	}
 }

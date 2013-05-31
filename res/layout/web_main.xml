@@ -20,11 +20,12 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_weight="0.5"
-        android:text="菜单" 
+        android:text="重登录" 
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:gravity="center_vertical|center_horizontal"
         android:clickable="true"/>
         
+        <!-- 
         <TextView
         android:id="@+id/main_config_text"
         android:layout_width="wrap_content"
@@ -34,7 +35,30 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:gravity="center_vertical|center_horizontal"
         android:clickable="true"/>
-        
+		 -->
+		
+		<!--  
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="拍摄"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:gravity="center_vertical|center_horizontal"
+        	android:clickable="true" />
+       	 -->
+        <!-- 
+        <TextView
+            android:id="@+id/tv_loc"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="定位"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:gravity="center_vertical|center_horizontal"
+        	android:clickable="true" />
+         -->
         <TextView
         android:id="@+id/main_exit_text"
         android:layout_width="wrap_content"

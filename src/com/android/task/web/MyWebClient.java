@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -15,10 +17,12 @@ import android.widget.Toast;
 public class MyWebClient extends WebViewClient{
 	private Activity a;
 	private ProgressDialog mLoadingBar;
-	public MyWebClient(Activity a)
+	private String mCookie;
+	public MyWebClient(Activity a, String cookie)
 	{
 		super();
 		this.a  = a;
+		mCookie = cookie;
 	}
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
 		if (url.endsWith(".3gp")){
@@ -35,31 +39,33 @@ public class MyWebClient extends WebViewClient{
         view.loadUrl(url);
         return true;
     }
-	/*
+	
 	@Override
 	public void onPageStarted(WebView view, String url, Bitmap favicon) 
 	{
 		//mLoadingBar=ProgressDialog.show(this.a, null, "正在加载…");
-		Toast.makeText(this.a, "访问服务器...", 1).show();
+
+		Toast.makeText(this.a, "访问服务器...", Toast.LENGTH_SHORT).show();
 	}
 	
 	@Override
 	public void onPageFinished(WebView view, String url) {
-	Toast.makeText(this.a, "服务正常返回", 1).show();
+
 		super.onPageFinished(view, url);
-	}*/
+    	Toast.makeText(this.a, "服务正常返回: "+mCookie, Toast.LENGTH_SHORT).show();
+	}
 	@Override
     public void onReceivedError(WebView view, int errorCode,String description, String failingUrl) {
         Toast.makeText(this.a, "网络错误", Toast.LENGTH_SHORT).show();
-        final AlertDialog alertDialog = new AlertDialog.Builder(this.a).create();
-        alertDialog.setTitle("发生错误");
-        alertDialog.setMessage(description);
-        alertDialog.setButton("OK", new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int which) {
-            
-            	alertDialog.dismiss();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.a);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which) { 
+            	
             }
         });
+        builder.setTitle("发生错误");
+        builder.setMessage(description);
+        final AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 }

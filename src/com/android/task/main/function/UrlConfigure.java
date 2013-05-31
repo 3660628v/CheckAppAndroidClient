@@ -72,12 +72,14 @@ public class UrlConfigure {
 			{
 				EditText url_edit = (EditText)UrlConfigure.this.mUrlSettingView.findViewById(R.id.url_edit);
 				String myUrl = url_edit.getText().toString();
-				Toast.makeText(UrlConfigure.this.mA, "已经保存服务器地址: "+myUrl, Toast.LENGTH_LONG).show();
-				Toast.makeText(UrlConfigure.this.mA, "正在加载...", Toast.LENGTH_LONG).show();
+				Toast.makeText(UrlConfigure.this.mA, "已经保存服务器地址: "+myUrl, Toast.LENGTH_SHORT).show();
+				Toast.makeText(UrlConfigure.this.mA, "正在加载...", Toast.LENGTH_SHORT).show();
 				UrlConfigure.this.mEditor.putString(URL_PREFER_ITEM_URL, myUrl);
 				UrlConfigure.this.mEditor.commit();
 				Log.d(TAG,"LOAD URL\t"+UrlConfigure.this.getUrl());
-				UrlConfigure.this.mWebView.loadUrl(UrlConfigure.this.getUrl());
+				if ( mWebView != null ) {
+					UrlConfigure.this.mWebView.loadUrl(UrlConfigure.this.getUrl());
+				}
 			}
 		});
 		mUrlConfBuilder.setNegativeButton("取消", new OnClickListener()
