@@ -228,7 +228,6 @@ public class PhotoCapturer extends Activity implements SensorEventListener
 		});
 		*/
 		mCameraAFC = new Camera.AutoFocusCallback() {
-			@Override
 			public void onAutoFocus(boolean success, Camera camera) {
 				 if ( success ) {
 					 //Toast.makeText(PhotoCapturer.this, "autofocus",
@@ -247,7 +246,6 @@ public class PhotoCapturer extends Activity implements SensorEventListener
 		mTvInfo.setTextSize(20);
 		
 		mLayout.setOnClickListener(new View.OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				// 拍照
 				if ( ! isPreview ) return;
@@ -346,12 +344,10 @@ public class PhotoCapturer extends Activity implements SensorEventListener
 
 
 
-	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// 空函数
 	}
 
-	@Override
 	public void onSensorChanged(SensorEvent ev) {
 		// 判断是否稳定，稳定后对焦
 		if ( ev.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {

@@ -137,7 +137,6 @@ public class LocTimerTask extends TimerTask {
 	 * 监听函数，又新位置的时候，格式化成字符串，输出到屏幕中
 	 */
 	public class MyLocationListenner implements BDLocationListener {
-		@Override
 		public void onReceiveLocation(BDLocation location) {
 			if ( location != null ) {
 				mReadyFlag = true;

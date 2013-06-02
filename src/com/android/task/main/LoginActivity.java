@@ -120,7 +120,6 @@ public class LoginActivity extends Activity {
 		
 		mFillView = findViewById(R.id.tv_fill);
 		mFillView.setOnClickListener(new View.OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				// 设置焦点，消除输入框的error信息
 				mPasswordView.requestFocus();
